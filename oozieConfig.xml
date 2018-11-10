@@ -1,0 +1,161 @@
+<workflow-app name="Test"
+	xmlns="uri:oozie:workflow:0.5">
+	<start to="fork14_1"/>
+	<fork name="fork14_1">
+		<path start="airbnbCrowler"></path>
+		<path start="downloadTweets"></path>
+		<path start="priceProcess"></path>
+		<path start="policeActions"></path>
+		<path start="airQualityProcess"></path>
+		<path start="schoolProcess"></path>
+		<path start="transportProcess"></path>
+	</fork>
+	<join name="join15" to="joinProcess"></join>
+	<action name="airbnbCrowler">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnbCrowler.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnbCrowler.sh</file>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnbCrowler.py</file>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/properties.sh</file>
+		</shell>
+		<ok to="airbnb"/>
+		<error to="kill"/>
+	</action>
+	<action name="airbnb">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnb.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnb.sh</file>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnb.py</file>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/properties.sh</file>
+		</shell>
+		<ok to="airbnbProcess"/>
+		<error to="kill"/>
+	</action>
+	<action name="airbnbProcess">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnbProcess.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnbProcess.sh</file>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/airbnbProcess.py</file>
+			<file>/user/raj_ops/installProcessDocker/airbnb/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="downloadTweets">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/downloadAllTweets.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/downloadAllTweets.sh</file>
+			<file>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/processtweets.py</file>
+			<file>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/properties.sh</file>
+		</shell>
+		<ok to="tweetProcessiongSubmit"/>
+		<error to="kill"/>
+	</action>
+	<action name="tweetProcessiongSubmit">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/tweetprocessingSubmit.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/tweetprocessingSubmit.sh</file>
+			<file>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/tweetprocessing-0.0.1-SNAPSHOT.jar</file>
+			<file>/user/raj_ops/installProcessDocker/tweetProcessing/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="priceProcess">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/priceEvolution/installLocal/pricesProcess.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/priceEvolution/installLocal/price_evolution.py</file>
+			<file>/user/raj_ops/installProcessDocker/priceEvolution/installLocal/pricesProcess.sh</file>
+			<file>/user/raj_ops/installProcessDocker/priceEvolution/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="policeActions">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/policeActionsEvolution/installLocal/policeActions.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/policeActionsEvolution/installLocal/policeActions.py</file>
+			<file>/user/raj_ops/installProcessDocker/policeActionsEvolution/installLocal/policeActions.sh</file>
+			<file>/user/raj_ops/installProcessDocker/policeActionsEvolution/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="airQualityProcess">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/airQuality/installLocal/airQualityProcess.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/airQuality/installLocal/airQualityProcess.py</file>
+			<file>/user/raj_ops/installProcessDocker/airQuality/installLocal/airQualityProcess.sh</file>
+			<file>/user/raj_ops/installProcessDocker/airQuality/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="schoolProcess">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/schoolsProcess/installLocal/colegiosDataset.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/schoolsProcess/installLocal/colegiosDataset.py</file>
+			<file>/user/raj_ops/installProcessDocker/schoolsProcess/installLocal/colegiosDataset.sh</file>
+			<file>/user/raj_ops/installProcessDocker/schoolsProcess/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="transportProcess">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/transportProcess/installLocal/transport.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/transportProcess/installLocal/transport.py</file>
+			<file>/user/raj_ops/installProcessDocker/transportProcess/installLocal/transport.sh</file>
+			<file>/user/raj_ops/installProcessDocker/transportProcess/installLocal/properties.sh</file>
+		</shell>
+		<ok to="join15"/>
+		<error to="kill"/>
+	</action>
+	<action name="joinProcess">
+		<shell
+			xmlns="uri:oozie:shell-action:0.3">
+			<job-tracker>${resourceManager}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<exec>/user/raj_ops/installProcessDocker/joinProcess/installLocal/joinProcess.sh</exec>
+			<file>/user/raj_ops/installProcessDocker/joinProcess/installLocal/joinProcess.sh</file>
+			<file>/user/raj_ops/installProcessDocker/joinProcess/installLocal/joinProcess.py</file>
+			<file>/user/raj_ops/installProcessDocker/joinProcess/installLocal/properties.sh</file>
+		</shell>
+		<ok to="end"/>
+		<error to="kill"/>
+	</action>
+	<kill name="kill">
+		<message>${wf:errorMessage(wf:lastErrorNode())}</message>
+	</kill>
+	<end name="end"/>
+</workflow-app>
